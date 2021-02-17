@@ -28,12 +28,14 @@ const routes = Object.keys(components).reduce(
   (memo, key) => [
     ...memo,
     {
-      path: key
-        .toLowerCase()
-        .replace(/\/src\/pages\//, "/#/")
-        .replace(/index.vue/, "")
-        .replace(/.vue/, ""),
-
+      path: (
+        key
+          .toLowerCase()
+          .replace(/\/src\/pages\//, "/#/")
+          .replace(/index.vue/, "")
+          .replace(/.vue/, "") + "/"
+      ).replace(/\/\//g, "/"),
+      dynamic: /\[(.*?)\]/g.test(key),
       component: defineAsyncComponent(components[key]),
     },
   ],
@@ -47,11 +49,35 @@ const router = reactive({
 provide("router", router);
 
 const onHashChange = () => {
-  const currentPath = `/${window.location.hash.split("?")[0]}`;
+  const url = window.location.hash.split("?")[0];
 
-  activeRoute.value = routes.find((route) => {
-    return route.path === currentPath;
-  }) || { path: "/#/404", component: PageNotFound };
+  const currentPath = `/${url}${url.slice(-1) !== "/" ? "/" : ""}`;
+  activeRoute.value = routes
+    .filter((route) => !route.dynamic)
+    .find((route) => {
+      return route.path === currentPath;
+    }) ||
+    routes
+      .filter((route) => route.dynamic)
+      .find((route) => {
+        return new RegExp(
+          route.path.replace(/(\/)(\[)(.*?)(\])(\/)/g, "$1(.*?)$5")
+        ).test(currentPath);
+      }) || { path: "/#/404", component: PageNotFound };
+
+  const urlTokens = currentPath.split("/");
+
+  const params = !activeRoute.value.dynamic
+    ? {}
+    : activeRoute.value.path
+        .split("/")
+        .map((token, i) =>
+          !/\[(.*?)\]/g.test(token)
+            ? null
+            : { [token.replace("[", "").replace("]", "")]: urlTokens[i] }
+        )
+        .filter((item) => item)
+        .reduce((memo, item) => ({ ...memo, ...item }), {});
 
   const query =
     location.hash.split("?").length == 1
@@ -66,7 +92,12 @@ const onHashChange = () => {
             }),
             {}
           );
-  router.current = { path: activeRoute.value.path.split("#")[1], query };
+
+  router.current = {
+    path: activeRoute.value.path.split("#")[1],
+    query,
+    params,
+  };
 };
 
 onMounted(() => {
