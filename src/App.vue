@@ -20,4 +20,16 @@ body {
   padding: 0;
   margin: 0;
 }
+button {
+  padding: 15px;
+  color: white;
+  background-color: black;
+  border: none;
+  border-radius: 5px;
+  margin-left: 20px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: darkslategrey;
+}
 </style>
