@@ -4,18 +4,21 @@
 
 <script setup>
 import {
-  onMounted,
+  computed,
   defineAsyncComponent,
   defineComponent,
-  computed,
   getCurrentInstance,
+  onMounted,
   provide,
   reactive,
   shallowRef,
   h,
 } from "vue";
 
+if (!location.hash) location.hash = "/";
+
 const instance = getCurrentInstance();
+
 const PageNotFound = defineComponent({
   render() {
     return h("h1", {}, "404 - Page not found");
