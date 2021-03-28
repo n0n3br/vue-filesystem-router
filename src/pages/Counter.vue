@@ -12,7 +12,7 @@ export default {
     return { v: 0 };
   },
   props: ["value"],
-  inject: ["router"],
+  inject: ["$router"],
   watch: {
     router: {
       handler(v) {
@@ -20,7 +20,7 @@ export default {
       },
       immediate: true,
     },
-    "router.current.query.value": {
+    "$router.current.query.value": {
       handler(v) {
         if (isNaN(v)) return;
         this.v = parseInt(v);
@@ -28,6 +28,9 @@ export default {
       immediate: true,
       deep: true,
     },
+  },
+  mounted() {
+    console.log(this);
   },
 };
 </script>

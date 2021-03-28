@@ -6,11 +6,11 @@
 
 <script>
 export default {
-  inject: ["router"],
+  inject: ["$router"],
   computed: {
     bookId() {
-      if (!this.router) return null;
-      return this.router.current.params.id || null;
+      if (!this.$router) return null;
+      return this.$router.current.params.id || null;
     },
   },
   methods: {

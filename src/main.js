@@ -1,4 +1,4 @@
 import { createApp } from "vue";
 import App from "./App.vue";
-
-createApp(App).mount("#app");
+import vueFsRouter from "./plugins/vue-fs-router";
+createApp(App).use(vueFsRouter).mount("#app");

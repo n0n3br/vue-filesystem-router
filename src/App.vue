@@ -4,7 +4,6 @@
 </template>
 
 <script setup>
-import VueFsRouter from "./components/VueFsRouter.vue";
 import Navbar from "./components/Navbar.vue";
 </script>
 
