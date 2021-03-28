@@ -10,10 +10,10 @@ export default {
       a: "",
     };
   },
-  inject: ["router"],
+  inject: ["$router"],
   computed: {
     name() {
-      return (this.router.current.query || {}).name || "";
+      return (this.$router.current.query || {}).name || "";
     },
   },
 };
